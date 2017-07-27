@@ -24,5 +24,42 @@ trait Puzzle {
       * @param customerId The customer id
       * @return A list of recommended product ids
       */
-    def recommend(customerId: String): List[String]
+    def recommend(customerId: String): List[String] = {
+      
+      import org.apache.spark.{SparkConf, SparkContext}
+
+      // Products
+      val products = sqlContext.read.json("/home/jiahong/Desktop/data-engineer/src/main/resources/products")
+
+      val tenCheapProducts = products
+            .filter($"price" > 100)
+            .filter($"price" < 500)
+            .orderBy(rand())
+            .select ("id")
+            .limit(10)
+            .collect
+            .map(r => r.getString(0))
+            .toList
+
+      val tenExpensiveProducts = products
+            .filter($"price" > 500)
+            .orderBy(rand())
+            .select ("id")
+            .limit(10)
+            .collect
+            .map(r => r.getString(0))
+            .toList
+
+      //visits 
+      val visits = sqlContext.read.json("/home/jiahong/Desktop/data-engineer/src/main/resources/visit/*")
+
+      val n_visit_log = visits
+          .filter($"customer_id" === customerId)
+          .count()
+
+      val recommeded = if(n_visit_log > 0) tenExpensiveProducts; else tenCheapProducts;
+
+      return recommeded
+
+    }
 }

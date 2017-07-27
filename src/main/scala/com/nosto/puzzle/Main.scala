@@ -19,7 +19,11 @@ import org.apache.spark.SparkContext
   * @author olli
   */
 object Main {
-    def instantiate(sc: SparkContext): Puzzle = ??? // <-- ADD YOUR IMPLEMENTATION HERE
+    def instantiate(sc: SparkContext): Puzzle = {// <-- ADD YOUR IMPLEMENTATION HERE
+
+
+
+    }
 
     def main(args: Array[String]): Unit = LocalSparkRunner.run{sc => {
         val puzzle = instantiate(sc)
