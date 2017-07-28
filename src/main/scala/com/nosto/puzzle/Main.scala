@@ -21,7 +21,8 @@ import org.apache.spark.SparkContext
 object Main {
     def instantiate(sc: SparkContext): Puzzle = {// <-- ADD YOUR IMPLEMENTATION HERE
 
-
+      val puzzle = new Puzzle
+      return puzzle
 
     }
 
