@@ -31,6 +31,7 @@ trait Puzzle {
       // Products
       val products = sqlContext.read.json("/home/jiahong/Desktop/data-engineer/src/main/resources/products")
 
+      // 10 products with price between 100 and 500 euro
       val tenCheapProducts = products
             .filter($"price" > 100)
             .filter($"price" < 500)
@@ -41,6 +42,7 @@ trait Puzzle {
             .map(r => r.getString(0))
             .toList
 
+      // 10 products with price more than 500 euro
       val tenExpensiveProducts = products
             .filter($"price" > 500)
             .orderBy(rand())
@@ -53,11 +55,15 @@ trait Puzzle {
       //visits 
       val visits = sqlContext.read.json("/home/jiahong/Desktop/data-engineer/src/main/resources/visit/*")
 
+      // number of logs that this customer_id has
       val n_visit_log = visits
           .filter($"customer_id" === customerId)
           .count()
 
-      val recommeded = if(n_visit_log > 0) tenExpensiveProducts; else tenCheapProducts;
+
+      // if this user has 2 or more than 2 visit logs, recommend him/her random 10 expensive prducts;
+      // if this user has only 0 or 1 visit logs, recommend him/her 10 random cheap products;
+      val recommeded = if(n_visit_log > 1) tenExpensiveProducts; else tenCheapProducts;
 
       return recommeded
 
